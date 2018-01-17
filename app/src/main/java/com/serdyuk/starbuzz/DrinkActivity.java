@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class DrinkActivity extends Activity {
-    public static String EXTRA_DRINKNO;
+    public static String EXTRA_DRINKNO = "drinkNo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
