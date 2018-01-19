@@ -32,7 +32,7 @@ public class TopLevelActivity extends Activity {
             }
         };
 
-//        Add Listener to list view in activity
+        //        Add Listener to list view in activity
         ListView listView = (ListView) findViewById(R.id.list_options);
         listView.setOnItemClickListener(itemClickListener);
     }
