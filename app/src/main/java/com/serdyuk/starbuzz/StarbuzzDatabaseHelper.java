@@ -2,6 +2,7 @@ package com.serdyuk.starbuzz;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -71,6 +72,19 @@ public class StarbuzzDatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 2) {
             sqLiteDatabase.execSQL("ALTER TABLE DRINK ADD COLUMN FAVORITE NUMERIC;");
         }
+    }
 
+    /*
+    * method example for getting data from database
+    *
+    * public Cursor query(String table, String[] columns, String selection,
+    * String[] selectionArgs, String groupBy,
+    * String having,
+    * String orderBy)
+    * */
+    public Cursor getDrinkNames(SQLiteDatabase sqLiteDatabase) {
+        Cursor cursor = sqLiteDatabase.query("DRINK", new String[] {"NAME", "DESCRIPTION"},
+                null, null, null, null, null);
+        return cursor;
     }
 }
