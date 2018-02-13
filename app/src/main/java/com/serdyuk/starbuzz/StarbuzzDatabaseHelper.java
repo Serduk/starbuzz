@@ -143,7 +143,7 @@ public class StarbuzzDatabaseHelper extends SQLiteOpenHelper {
      * */
     private Cursor getDoubleSorting(SQLiteDatabase sqLiteDatabase) {
         Cursor cursor = sqLiteDatabase.query("NAME",
-                new String[]{"_id", "NAME", "FAVORITE"},
+                new String[] {"_id", "NAME", "FAVORITE"},
                 null, null, null, null,
                 "FAVORITE DESC, NAME");
         return cursor;
@@ -159,4 +159,34 @@ public class StarbuzzDatabaseHelper extends SQLiteOpenHelper {
     * new String[] {"Latte"});
     *
     * */
+
+    /*
+    * AVG() Среднее значение
+    * COUNT() Количество строк
+    * SUM() Сумма
+    * MAX() Наибольшее значение
+    * MIN() Наименьшее значение
+    * */
+
+    /**
+     * return count of rows
+     * */
+    private Cursor getRowCounts(SQLiteDatabase sqLiteDatabase) {
+        Cursor cursor = sqLiteDatabase.query("DRINK",
+                new String[] {"COUNT (_id) AS count"},
+                null, null, null, null, null);
+        return cursor;
+    }
+
+    /**
+     * middle price
+     * average value price
+     * we take price from all rows and get they average value
+     * */
+    private Cursor getAVGPriceOfDrinks(SQLiteDatabase sqLiteDatabase) {
+        Cursor cursor = sqLiteDatabase.query("DRINK",
+                new String[] {"AVG(PRICE) AS price"},
+                null, null, null, null, null);
+        return cursor;
+    }
 }
