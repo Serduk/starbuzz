@@ -74,7 +74,7 @@ public class StarbuzzDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    /*
+    /**
     * method example for getting data from database
     *
     * public Cursor query(String table, String[] columns, String selection,
@@ -87,4 +87,76 @@ public class StarbuzzDatabaseHelper extends SQLiteOpenHelper {
                 null, null, null, null, null);
         return cursor;
     }
+
+    /**
+     * This method use query which return entry where we have "LATTE" in NAME
+     * */
+    public Cursor getSpecialSelector(SQLiteDatabase sqLiteDatabase) {
+        Cursor cursor = sqLiteDatabase.query("DRINK", new String[] {"NAME", "DESCRIPTION"},
+                "NAME = ?",
+                new String[] {"LATTE"}, null, null, null);
+        return cursor;
+    }
+
+    /**
+     * Hard query
+     *
+     * query return all data from columns NAME and DESCRIPTION from DRINK,
+     * where NAME contain "latte" and column DESCRIPTION contain "Our best drip coffee"
+     * */
+    private Cursor getHardQueryExample(SQLiteDatabase sqLiteDatabase) {
+        Cursor cursor = sqLiteDatabase.query("DRINK",
+                new String[] {"NAME", "DESCRIPTION"},
+                "NAME = ? OR DESCRIPTION = ?",
+                new String[] {"Latte", "Our best drip coffee"},
+                null, null, null);
+        return cursor;
+    }
+
+    /**
+     * Method return ID
+     * In query we should convert all integers and other params to STRING
+     * */
+    private Cursor getIntegerQueryExample(SQLiteDatabase sqLiteDatabase) {
+        Cursor cursor = sqLiteDatabase.query("DRINK",
+                new String[] {"NAME", "DESCRIPTION"},
+                "_id = ?",
+                new String[] {Integer.toString(1)},
+                null, null, null);
+        return cursor;
+    }
+
+    /**
+     *
+     * Method return cursor sorted my NAME
+     * */
+    private Cursor getSortedQueryByName(SQLiteDatabase sqLiteDatabase) {
+        Cursor cursor = sqLiteDatabase.query("DRINK",
+                new String[] {"_id", "NAME", "FAVORITE"},
+                null, null, null, null,
+                "NAME ASC");
+        return cursor;
+    }
+
+    /**
+     * Sort by descending FAVORITE, then ascending NAME
+     * */
+    private Cursor getDoubleSorting(SQLiteDatabase sqLiteDatabase) {
+        Cursor cursor = sqLiteDatabase.query("NAME",
+                new String[]{"_id", "NAME", "FAVORITE"},
+                null, null, null, null,
+                "FAVORITE DESC, NAME");
+        return cursor;
+
+    }
+
+    /*
+    *
+    * В следующем примере значение столбца DESCRIPTION заменяет- ся строкой “Tasty”, если поле названия напитка содержит “Latte”:
+    * ContentValues drinkValues = new ContentValues(); drinkValues.put("DESCRIPTION", "Tasty"); db.update("DRINK",
+    * drinkValues,
+    * "NAME = ?",
+    * new String[] {"Latte"});
+    *
+    * */
 }
