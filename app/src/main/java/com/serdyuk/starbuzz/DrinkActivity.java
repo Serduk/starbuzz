@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,5 +60,8 @@ public class DrinkActivity extends Activity {
             Toast toast = Toast.makeText(this, "Database unavailable", Toast.LENGTH_SHORT);
             toast.show();
         }
+    }
+
+    public void onFavoriteClicked(View view) {
     }
 }

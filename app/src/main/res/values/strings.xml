@@ -3,6 +3,8 @@
     <string name="starbuzz_logo">Starbuzz</string>
     <string name="title_activity_dring_category">Title Activity Drink Category</string>
 
+    <string name="favorite">Favorite</string>
+
     <string-array name="options">
         <item>Drinks</item>
         <item>Food</item>
