@@ -4,6 +4,7 @@
     <string name="title_activity_dring_category">Title Activity Drink Category</string>
 
     <string name="favorite">Favorite</string>
+    <string name="favorites">Your favorite drinks:</string>
 
     <string-array name="options">
         <item>Drinks</item>
