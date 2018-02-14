@@ -1,12 +1,14 @@
 package com.serdyuk.starbuzz;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,11 +29,12 @@ public class DrinkActivity extends Activity {
         try {
 //            connection to database
             SQLiteOpenHelper starbuzzDatabaseHelper = new StarbuzzDatabaseHelper(this);
-            SQLiteDatabase db = starbuzzDatabaseHelper.getReadableDatabase();
+            SQLiteDatabase db = starbuzzDatabaseHelper.getWritableDatabase();
 
 //            cursor creating
             Cursor cursor = db.query ("DRINK",
-                    new String[] {"NAME", "DESCRIPTION", "IMAGE_RESOURCE_ID"}, "_id = ?",
+                    new String[] {"NAME", "DESCRIPTION", "IMAGE_RESOURCE_ID", "FAVORITE"},
+                    "_id = ?",
                     new String[] {Integer.toString(drinkNo)},
                     null, null,null);
 
@@ -40,6 +43,7 @@ public class DrinkActivity extends Activity {
                 String nameText = cursor.getString(0);
                 String descriptionText = cursor.getString(1);
                 int photoId = cursor.getInt(2);
+                boolean isFavorite = (cursor.getInt(3) == 1);
 
 //                Filling drink name
                 TextView name = (TextView)findViewById(R.id.name);
@@ -53,15 +57,44 @@ public class DrinkActivity extends Activity {
                 ImageView photo = (ImageView)findViewById(R.id.photo);
                 photo.setImageResource(photoId);
                 photo.setContentDescription(nameText);
+
+                /*
+                * Set state for checkBox favorite
+                * */
+                CheckBox favorite = (CheckBox) findViewById(R.id.favorite);
+                favorite.setChecked(isFavorite);
             }
             cursor.close();
             db.close();
         } catch (SQLiteException e) {
-            Toast toast = Toast.makeText(this, "Database unavailable", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(this,
+                    "Database unavailable", Toast.LENGTH_SHORT);
             toast.show();
         }
     }
 
     public void onFavoriteClicked(View view) {
+        int drinkNo = (Integer) getIntent().getExtras().get(EXTRA_DRINKNO);
+
+        CheckBox favorite = (CheckBox) findViewById(R.id.favorite);
+        ContentValues drinkValues = new ContentValues();
+        SQLiteOpenHelper starbuzzDatabaseHelper
+                = new StarbuzzDatabaseHelper(DrinkActivity.this);
+
+        drinkValues.put("FAVORITE", favorite.isChecked());
+
+        try {
+            System.out.println("try insert checkBox data to database");
+            System.out.println("CheckBox is " + favorite.isChecked());
+            SQLiteDatabase db = starbuzzDatabaseHelper.getWritableDatabase();
+            db.update("DRINK",
+                    drinkValues,
+                    "_id = ?",
+                    new String[]{Integer.toString(drinkNo)});
+            db.close();
+        } catch (SQLiteException e) {
+            Toast toast = Toast.makeText(this, "Database unavailable", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 }
