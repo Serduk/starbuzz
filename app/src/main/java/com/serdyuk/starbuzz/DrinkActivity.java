@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -76,7 +77,9 @@ public class DrinkActivity extends Activity {
     public void onFavoriteClicked(View view) {
         int drinkNo = (Integer) getIntent().getExtras().get(EXTRA_DRINKNO);
 
-        CheckBox favorite = (CheckBox) findViewById(R.id.favorite);
+//        this code was commited because we will be use UpdateDrinkTask class,
+//        which will be update all data on backend
+/*        CheckBox favorite = (CheckBox) findViewById(R.id.favorite);
         ContentValues drinkValues = new ContentValues();
         SQLiteOpenHelper starbuzzDatabaseHelper
                 = new StarbuzzDatabaseHelper(DrinkActivity.this);
@@ -95,6 +98,77 @@ public class DrinkActivity extends Activity {
         } catch (SQLiteException e) {
             Toast toast = Toast.makeText(this, "Database unavailable", Toast.LENGTH_SHORT);
             toast.show();
+        }*/
+
+        new UpdateDrinkTask().execute(drinkNo);
+    }
+
+    /*
+    * Задача AsyncTask добавляется как внутренний класс в активность,
+    * которая должна ее использовать.
+    * Мы добавим свой класс UpdateDrinkTask как внутренний класс DrinkActivity.java.
+    * Задача будет выполняться в методе onFavoriteClicked() класса DrinkActivity,
+    * чтобы база данных обновлялась в фоновом режиме, когда пользо
+    * */
+
+    /**
+     * Class for async work
+     *
+     * In this class we load database
+     * and get data from there
+     *
+     * in AsyncTask we set first param as Integer, because we get param Integer in method doInBackground;
+     * Also, we add Boolean, because doInBackground -> should return boolean;
+     *
+     * in asyncTask next datas:
+     * (first) Integer - to doInBackground();
+     * (Second) Void - to onProgressUpdate();
+     * (Third) Boolean - onPostExecute();
+     *
+     * Created by sserdiuk on 2/16/18.
+     */
+    private class UpdateDrinkTask extends AsyncTask<Integer, Void, Boolean> {
+        ContentValues drinkValues;
+
+        /*
+        * Before we will run code for database for executing, we add checks to object ContentValues
+        * with name drinkValues
+        * */
+        protected void onPreExecute() {
+            CheckBox favorite = (CheckBox) findViewById(R.id.favorite);
+            drinkValues = new ContentValues();
+            drinkValues.put("FAVORITE", favorite.isChecked());
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... drinks) {
+            int drinkNo = drinks[0];
+            SQLiteOpenHelper starbuzzDatabaseHelper =
+                    new StarbuzzDatabaseHelper(DrinkActivity.this);
+
+        /*
+        * Method update() use object drinkValues which was created by method onPreExecute
+        * */
+            try {
+                SQLiteDatabase db = starbuzzDatabaseHelper.getWritableDatabase();
+                db.update("DRINK", drinkValues,
+                        "_id = ?", new String[]{Integer.toString(drinkNo)});
+                db.close();
+                return true;
+            } catch (SQLiteException e) {
+                return false;
+            }
+        }
+
+        /*
+        * We should take same param as in doInBackground method, in this case it will be Boolean
+        * */
+        protected void onPostExecute(Boolean success) {
+            if (!success) {
+                Toast toast = Toast.makeText(DrinkActivity.this,
+                        "Database unavailable", Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
     }
 }
